@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-6 py-16 text-white">
+
+    <!-- PROFILE CARD -->
+    <div class="bg-white/5 rounded-2xl p-8 text-center mb-10">
+
+        <!-- PROFILE IMAGE UPLOAD -->
+        <form action="/upload_profile" method="POST" enctype="multipart/form-data">
+            <label class="cursor-pointer block">
+<img src="{{ url_for('static', filename='uploads/' + (current_user.profile_pic or 'default.png')) }}?v={{ current_user.profile_pic }}"
+     class="w-32 h-32 mx-auto rounded-full object-cover border-4 border-green-400">
+                <input type="file" name="profile_pic" class="hidden" onchange="this.form.submit()">
+
+            </label>
+        </form>
+
+        <!-- USER INFO -->
+        <h2 class="text-2xl font-bold mt-4">
+            {{ current_user.username }}
+        </h2>
+
+        <p class="text-gray-400 text-sm">
+            AI Investor Profile
+        </p>
+
+    </div>
+
+    <!-- STATS -->
+<h2 class="text-xl font-bold text-white mb-6">
+    📊 Performance Metrics
+</h2>
+
+    <div class="grid md:grid-cols-4 gap-6 mb-10">
+
+    <!-- TOTAL VIEWED -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm">Total Viewed</p>
+        <h2 class="text-3xl text-green-400 font-bold mt-2">
+            {{ total_viewed }}
+        </h2>
+    </div>
+
+    <!-- UNIQUE STOCKS -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm">Unique Stocks</p>
+        <h2 class="text-3xl text-green-400 font-bold mt-2">
+            {{ unique_stocks }}
+        </h2>
+    </div>
+
+    <!-- PROFIT -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm">Estimated Profit</p>
+        <h2 class="text-3xl text-green-400 font-bold mt-2">
+            ₹{{ profit }}
+        </h2>
+    </div>
+
+    <!-- NEW EXTRA FEATURE 🔥 -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm">Activity Score</p>
+        <h2 class="text-3xl text-blue-400 font-bold mt-2">
+            {{ total_viewed * 5 }}
+        </h2>
+    </div>
+
+</div>
+    <!-- AI SUGGESTIONS -->
+    <h2 class="text-xl font-semibold mb-4">📊 AI Suggestions</h2>
+
+    {% if history %}
+    <div class="grid md:grid-cols-3 gap-6">
+
+        {% for item in history[:6] %}
+        <div class="bg-white/5 p-5 rounded-xl text-center hover:scale-105 transition">
+
+            <h3 class="text-lg font-semibold">
+                {{ item.stock }}
+            </h3>
+
+            <p class="text-sm mt-2 
+                {% if item.suggestion == 'BUY' %}
+                    text-green-400
+                {% else %}
+                    text-red-400
+                {% endif %}
+            ">
+                {{ item.suggestion }}
+            </p>
+
+            <p class="text-xs text-gray-400 mt-1">
+                {{ item.timestamp.strftime('%d %b %H:%M') if item.timestamp else '' }}
+            </p>
+
+            <a href="/analyze/{{ item.stock }}"
+               class="text-green-400 text-sm mt-2 inline-block hover:underline">
+                Analyze Again →
+            </a>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- PERFORMANCE SUMMARY (BOTTOM) -->
+<h2 class="text-xl font-semibold mt-12 mb-6 text-white">📊 Performance Summary</h2>
+
+<div class="grid md:grid-cols-5 gap-6 mb-12">
+
+    <!-- TOTAL VIEWED -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm mb-2">Total Viewed</p>
+        <h2 class="text-3xl text-green-400 font-bold">
+            {{ total_viewed }}
+        </h2>
+    </div>
+
+    <!-- UNIQUE STOCKS -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm mb-2">Unique Stocks</p>
+        <h2 class="text-3xl text-green-400 font-bold">
+            {{ unique_stocks }}
+        </h2>
+    </div>
+
+    <!-- PROFIT -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm mb-2">Estimated Profit</p>
+        <h2 class="text-3xl text-green-400 font-bold">
+            ₹{{ profit }}
+        </h2>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm mb-2">Activity Score</p>
+        <h2 class="text-3xl text-blue-400 font-bold">
+            {{ total_viewed * 5 }}
+        </h2>
+    </div>
+
+    <!-- TOP STOCK -->
+    <div class="bg-white/5 p-6 rounded-xl text-center hover:scale-105 transition">
+        <p class="text-gray-400 text-sm mb-2">Top Stock</p>
+
+        {% if top_stock %}
+            <h2 class="text-3xl text-green-400 font-bold tracking-wide">
+                {{ top_stock }}
+            </h2>
+        {% else %}
+            <h2 class="text-lg text-gray-500">
+                No data
+            </h2>
+        {% endif %}
+    </div>
+
+</div>
+
+    {% else %}
+        <p class="text-gray-400">No history yet</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

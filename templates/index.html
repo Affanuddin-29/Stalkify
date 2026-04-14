@@ -1,0 +1,349 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="text-center mt-20">
+
+    <h1 class="text-5xl font-bold text-green-400">
+        AI Investment Assistant
+    </h1>
+
+    <p class="text-gray-400 mt-4">
+        Analyze stocks with AI
+    </p>
+
+    <!-- ANALYZER BOX -->
+    <div class="mt-8 inline-block bg-white/5 p-6 rounded-xl border border-white/10">
+
+        <!-- TITLE YOU WANTED -->
+        <h2 class="text-lg font-semibold mb-4 text-white">
+            🔍 Stock Analyzer
+        </h2>
+
+        <!-- FORM -->
+        <form onsubmit="goAnalyzeHome(event)" class="flex flex-col sm:flex-row items-center justify-center gap-3">
+
+            <input id="homeStock" type="text" placeholder="Enter stock (AAPL)"
+                class="px-5 py-3 w-full sm:w-72 rounded-lg bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-green-400">
+
+            <button type="submit"
+                class="px-6 py-3 bg-green-500 text-black rounded-lg font-semibold hover:scale-105 transition">
+                Analyze
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- TRENDING STOCKS -->
+<div class="mt-16">
+    <h2 class="text-3xl font-bold text-center mb-8"> Trending Stocks</h2>
+
+    <div class="flex flex-wrap gap-4 justify-center">
+
+        <a href="/analyze/AAPL" class="px-5 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-green-500 hover:text-black transition">AAPL</a>
+
+        <a href="/analyze/TSLA" class="px-5 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-green-500 hover:text-black transition">TSLA</a>
+
+        <a href="/analyze/NVDA" class="px-5 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-green-500 hover:text-black transition">NVDA</a>
+
+        <a href="/analyze/MSFT" class="px-5 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-green-500 hover:text-black transition">MSFT</a>
+
+        <a href="/analyze/GOOGL" class="px-5 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-green-500 hover:text-black transition">GOOGL</a>
+
+    </div>
+</div>
+
+
+<!-- FEATURES -->
+
+<h2 class="text-3xl font-bold text-white text-center mt-12 mb-4">
+     Smart Features
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+
+    <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition">
+        <h3 class="text-green-400 font-semibold">📊 AI Signals</h3>
+        <p class="text-gray-400 text-sm">Smart buy/sell prediction</p>
+    </div>
+
+    <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition">
+        <h3 class="text-green-400 font-semibold">📈 Charts</h3>
+        <p class="text-gray-400 text-sm">Visual stock trends</p>
+    </div>
+
+    <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition">
+        <h3 class="text-green-400 font-semibold">⚠️ Risk Analysis</h3>
+        <p class="text-gray-400 text-sm">Instant risk analysis</p>
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+function goAnalyzeHome(event){
+    event.preventDefault(); // VERY IMPORTANT
+
+    const stock = document.getElementById("homeStock").value.trim();
+
+    if(stock){
+        window.location.href = "/analyze/" + stock.toUpperCase();
+    }
+}
+</script>
+<!-- NEWS PREVIEW -->
+<div class="mt-20">
+
+    <h2 class="text-3xl font-bold text-white mb-6 text-center">
+          Latest News
+    </h2>
+
+   <div class="grid md:grid-cols-2 gap-6">
+
+    {% for item in news[:2] %}
+    <a href="{{ item.url }}" target="_blank">
+
+        <div class="bg-white/5 rounded-xl overflow-hidden 
+                    hover:scale-105 transition flex flex-col h-full">
+
+            <!-- IMAGE (FIXED HEIGHT) -->
+            <img src="{{ item.image }}"
+                 class="w-full h-48 object-cover"
+                 onerror="this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3'">
+
+            <!-- CONTENT (FLEX FIX) -->
+            <div class="p-4 flex flex-col justify-between flex-1">
+
+                <!-- TITLE (LIMIT HEIGHT) -->
+                <h3 class="text-white font-semibold line-clamp-2">
+                    {{ item.title }}
+                </h3>
+
+                <!-- SOURCE -->
+                <p class="text-gray-400 text-sm mt-2">
+                    {{ item.source }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </a>
+    {% endfor %}
+
+</div>
+
+    <!-- SEE MORE -->
+    <div class="text-center mt-6">
+        <a href="/news" class="text-green-400 hover:underline">
+            → View More News
+        </a>
+    </div>
+
+</div>
+
+<div class="mt-16">
+    <h2 class="text-3xl font-bold text-center mb-6"> Market Overview</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            <p class="text-gray-400">NIFTY</p>
+            <h2 class="text-green-400 text-xl font-bold">+0.8%</h2>
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            <p class="text-gray-400">SENSEX</p>
+            <h2 class="text-green-400 text-xl font-bold">+1.2%</h2>
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            <p class="text-gray-400">NASDAQ</p>
+            <h2 class="text-red-400 text-xl font-bold">-0.5%</h2>
+        </div>
+
+    </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="mt-20">
+
+    <h2 class="text-3xl text-center font-bold mb-10">
+         What Users Say
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <!-- CARD 1 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "This app helped me understand stocks easily!"
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Rahul</h4>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "Clean UI and very useful predictions."
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Ayesha</h4>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "Best student project I’ve seen honestly."
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Mentor</h4>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "Very fast and accurate stock insights."
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Imran</h4>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "The UI feels premium and smooth."
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Sneha</h4>
+        </div>
+
+        <!-- CARD 6 -->
+        <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:scale-105 transition shadow-lg">
+            <p class="text-gray-300 italic">
+                "Great for beginners in stock market."
+            </p>
+            <h4 class="text-green-400 mt-4 font-semibold">— Arjun</h4>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- WHY CHOOSE US -->
+<div class="mt-16">
+    <h2 class="text-3xl font-bold text-center mb-6">  Why Choose Us</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            ⚡ Fast AI Predictions
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            🧠 Beginner Friendly
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl text-center">
+            🎨 Clean & Modern UI
+        </div>
+
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="mt-16">
+    <h2 class="text-3xl font-bold text-center mb-6">  How It Works</h2>
+
+    <div class="grid md:grid-cols-3 gap-6 text-center">
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            1️⃣ Enter Stock
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            2️⃣ AI Analyzes
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            3️⃣ Get Prediction
+        </div>
+
+    </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="mt-20 text-center">
+
+    <h2 class="text-3xl font-bold text-green-400">
+        Start Your Investment Journey 
+    </h2>
+
+    <a href="/dashboard"
+       class="inline-block mt-6 px-8 py-3 bg-green-500 text-black rounded-lg font-semibold hover:scale-105 transition">
+        Go to Dashboard
+    </a>
+
+</div>
+
+<script>
+function goAnalyze(e){
+    e.preventDefault();
+    let s = document.getElementById("stock").value;
+    if(s){
+        window.location.href = "/analyze/" + s;
+    }
+}
+
+gsap.from("#title", {y:-50, opacity:0, duration:1});
+</script>
+<!-- FOOTER -->
+<footer class="mt-20 border-t border-white/10 pt-10 pb-6 bg-black/30 backdrop-blur-md">
+
+    <div class="max-w-6xl mx-auto px-6">
+
+        <div class="grid md:grid-cols-3 gap-10">
+
+            <!-- BRAND -->
+            <div>
+                <h2 class="text-xl font-bold text-green-400">Stalkify</h2>
+                <p class="text-gray-400 mt-3 text-sm">
+                    AI-powered stock analysis platform helping you make smarter investment decisions.
+                </p>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div>
+                <h3 class="text-white font-semibold mb-3">Quick Links</h3>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="/" class="hover:text-green-400 transition">Home</a></li>
+                    <li><a href="/dashboard" class="hover:text-green-400 transition">Dashboard</a></li>
+                    <li><a href="/profile" class="hover:text-green-400 transition">Profile</a></li>
+                    <li><a href="/simulator" class="hover:text-green-400 transition">Simulator</a></li>
+                </ul>
+            </div>
+
+            <!-- SOCIAL -->
+            <div>
+                <h3 class="text-white font-semibold mb-3">Connect</h3>
+                <div class="flex gap-4 text-gray-400 text-lg">
+
+                    <a href="#" class="hover:text-green-400 transition">🌐</a>
+                    <a href="#" class="hover:text-green-400 transition">🐦</a>
+                    <a href="#" class="hover:text-green-400 transition">📸</a>
+                    <a href="#" class="hover:text-green-400 transition">💼</a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="border-t border-white/10 mt-8 pt-6 text-center text-gray-500 text-sm">
+            © 2026 Stalkify. All rights reserved.
+        </div>
+
+    </div>
+
+</footer>
+
+
+{% endblock %}

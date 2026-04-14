@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-6 py-16">
+
+    <!-- HEADER -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-green-400">💰 Profit Simulator</h1>
+        <p class="text-gray-400 mt-2">Live trading calculator with insights</p>
+    </div>
+
+    <!-- CARD -->
+    <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-10 shadow-xl">
+
+        <!-- INPUTS -->
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <input id="buy" type="number" step="any" placeholder="Buy Price"
+                class="p-4 rounded-lg bg-white/10 border border-white/20 focus:ring-2 focus:ring-green-400">
+
+            <input id="sell" type="number" step="any" placeholder="Sell Price"
+                class="p-4 rounded-lg bg-white/10 border border-white/20 focus:ring-2 focus:ring-green-400">
+
+            <input id="qty" type="number" placeholder="Quantity"
+                class="p-4 rounded-lg bg-white/10 border border-white/20 focus:ring-2 focus:ring-green-400">
+
+        </div>
+
+        <!-- RESULT -->
+        <div class="mt-10 text-center">
+
+            <h2 class="text-2xl mb-2">Result</h2>
+
+            <p id="result" class="text-4xl font-bold text-gray-400">
+                ₹ 0
+            </p>
+
+            <p id="status" class="mt-2 text-gray-400">
+                Enter values to calculate
+            </p>
+
+            <p id="percent" class="mt-2 text-sm text-gray-400"></p>
+
+        </div>
+
+        <!-- CHART -->
+        <div class="mt-10">
+            <canvas id="simChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chart;
+
+function updateChart(buy, sell) {
+    const ctx = document.getElementById("simChart");
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: ["Buy", "Sell"],
+            datasets: [{
+                data: [buy, sell],
+                borderColor: sell >= buy ? "#22c55e" : "#f87171",
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                backgroundColor: "rgba(34,197,94,0.1)"
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+function calculate() {
+    let buy = parseFloat(document.getElementById("buy").value);
+    let sell = parseFloat(document.getElementById("sell").value);
+    let qty = parseFloat(document.getElementById("qty").value);
+
+    if (!buy || !sell || !qty) return;
+
+    let profit = (sell - buy) * qty;
+    let percent = ((sell - buy) / buy) * 100;
+
+    const result = document.getElementById("result");
+    const status = document.getElementById("status");
+    const percentText = document.getElementById("percent");
+
+    result.innerText = "₹ " + profit.toFixed(2);
+    percentText.innerText = percent.toFixed(2) + "%";
+
+    if (profit > 0) {
+        result.className = "text-4xl font-bold text-green-400";
+        status.innerText = "Profit 📈";
+    } else if (profit < 0) {
+        result.className = "text-4xl font-bold text-red-400";
+        status.innerText = "Loss 📉";
+    } else {
+        result.className = "text-4xl font-bold text-gray-400";
+        status.innerText = "No Gain No Loss ⚖️";
+    }
+
+    updateChart(buy, sell);
+}
+
+// LIVE CALCULATION
+document.getElementById("buy").addEventListener("input", calculate);
+document.getElementById("sell").addEventListener("input", calculate);
+document.getElementById("qty").addEventListener("input", calculate);
+</script>
+
+{% endblock %}

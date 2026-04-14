@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-6 py-12 text-white">
+
+    <!-- WELCOME -->
+    <div class="mb-10">
+        <h1 class="text-4xl font-bold text-green-400">
+            Welcome, {{ current_user.username }} 👋
+        </h1>
+        <p class="text-gray-400 mt-2">Here’s your portfolio overview</p>
+    </div>
+
+    <!-- QUICK STATS -->
+    <h2 class="text-2xl font-semibold mb-4">  Quick Stats</h2>
+
+    {% set total = watchlist | sum(attribute='percent') %}
+    {% set count = watchlist|length %}
+    {% set avg = (total / count) if count > 0 else 0 %}
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            <p>Total Stocks</p>
+            <h2 class="text-3xl text-green-400">{{ count }}</h2>
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            <p>Total Change</p>
+            <h2 class="text-3xl {% if total>=0 %}text-green-400{% else %}text-red-400{% endif %}">
+                {{ total | round(2) }}%
+            </h2>
+        </div>
+
+        <div class="bg-white/5 p-6 rounded-xl">
+            <p>Average</p>
+            <h2 class="text-3xl {% if avg>=0 %}text-green-400{% else %}text-red-400{% endif %}">
+                {{ avg | round(2) }}%
+            </h2>
+        </div>
+
+    </div>
+
+    <!-- PORTFOLIO INSIGHTS -->
+    <h2 class="text-2xl mb-4"> Portfolio Insights</h2>
+
+    <div class="grid md:grid-cols-4 gap-6 mb-12">
+
+        {% set buy = watchlist | selectattr('percent','gt',0) | list | length %}
+        {% set sell = watchlist | selectattr('percent','lt',0) | list | length %}
+        {% set neutral = watchlist | selectattr('percent','equalto',0) | list | length %}
+
+        <div class="bg-white/5 p-5 rounded text-center">
+            <p>Buy</p>
+            <h2 class="text-green-400 text-2xl">{{ buy }}</h2>
+        </div>
+
+        <div class="bg-white/5 p-5 rounded text-center">
+            <p>Sell</p>
+            <h2 class="text-red-400 text-2xl">{{ sell }}</h2>
+        </div>
+
+        <div class="bg-white/5 p-5 rounded text-center">
+            <p>Neutral</p>
+            <h2 class="text-yellow-400 text-2xl">{{ neutral }}</h2>
+        </div>
+
+        <div class="bg-white/5 p-5 rounded text-center">
+            <p>Market Mood</p>
+            {% if count == 0 %}
+                <h2 class="text-gray-400">No Data</h2>
+            {% elif sell/count > 0.5 %}
+                <h2 class="text-red-400">Bearish 📉</h2>
+            {% else %}
+                <h2 class="text-green-400">Bullish 📈</h2>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- QUICK ANALYZER -->
+    <h2 class="text-2xl mb-4">  Quick Analyzer</h2>
+
+    <div class="flex justify-center mb-16">
+        <form onsubmit="goAnalyze(event)" class="flex gap-3">
+            <input id="stockInput" required
+                placeholder="AAPL, TSLA"
+                class="px-5 py-3 w-72 rounded bg-white/10 border border-white/20">
+
+            <button class="px-6 py-3 bg-green-500 text-black rounded font-semibold">
+                Analyze
+            </button>
+        </form>
+    </div>
+
+    <!-- WATCHLIST -->
+    <h2 class="text-2xl mb-6">  Watchlist</h2>
+
+    {% if watchlist %}
+    <div class="grid md:grid-cols-2 gap-6">
+
+        {% for item in watchlist %}
+        <div class="bg-white/5 p-6 rounded-xl">
+
+            <h3 class="text-lg font-semibold">{{ item.stock }}</h3>
+
+            <p class="{% if item.percent>0 %}text-green-400{% else %}text-red-400{% endif %}">
+                ₹ {{ item.price }} ({{ item.percent }}%)
+            </p>
+
+            <div class="flex gap-3 mt-4">
+
+                <button onclick="goStock('{{ item.stock }}')"
+                    class="bg-green-500 px-4 py-2 rounded text-black">
+                    Analyze
+                </button>
+
+                <form method="POST" action="/remove_watchlist">
+                    <input type="hidden" name="stock" value="{{ item.stock }}">
+                    <button class="bg-red-500 px-4 py-2 rounded">
+                        Remove
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+    <p class="text-gray-400">No stocks added</p>
+    {% endif %}
+
+</div>
+
+<!-- JS -->
+<script>
+function goAnalyze(e){
+    e.preventDefault();
+    let stock = document.getElementById("stockInput").value.trim();
+    if(stock){
+        window.location.href = "/analyze/" + stock.toUpperCase();
+    }
+}
+function goStock(stock){
+    window.location.href = "/analyze/" + stock;
+}
+</script>
+
+{% endblock %}

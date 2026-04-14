@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto py-20 text-center">
+
+    <h1 class="text-4xl text-green-400 font-bold mb-6">
+        {{ symbol }} Analysis
+    </h1>
+
+    <p class="text-2xl">Price: ₹ {{ price }}</p>
+
+    <p class="text-xl mt-2">
+        Change:
+        <span class="{% if percent > 0 %}text-green-400{% else %}text-red-400{% endif %}">
+            {{ percent }}%
+        </span>
+    </p>
+
+    <div class="mt-6">
+        <span class="px-4 py-2 rounded
+            {% if signal == 'BUY' %}
+                bg-green-500 text-black
+            {% else %}
+                bg-red-500 text-white
+            {% endif %}
+        ">
+            {{ signal }}
+        </span>
+    </div>
+
+    <!-- SAVE -->
+    <form method="POST" action="/add_watchlist" class="mt-8">
+        <input type="hidden" name="stock" value="{{ symbol }}">
+        <button class="bg-green-500 px-6 py-2 rounded text-black">
+            Save to Watchlist
+        </button>
+    </form>
+
+    <!-- HIDDEN DATA (SAFE) -->
+    <div id="pricesData" data-prices='{{ prices | tojson | safe }}'></div>
+
+    <!-- CHART -->
+    <div class="mt-10">
+        <canvas id="mainChart"></canvas>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const pricesElement = document.getElementById("pricesData");
+const prices = JSON.parse(pricesElement.dataset.prices);
+
+const ctx = document.getElementById("mainChart");
+
+if (ctx && prices.length > 0) {
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: prices.map((_, i) => i + 1),
+            datasets: [{
+                data: prices
+            }]
+        }
+    });
+}
+</script>
+
+{% endblock %}

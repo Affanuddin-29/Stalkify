@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-6 py-16">
+
+    <!-- HEADER -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-green-400"> Market News</h1>
+        <p class="text-gray-400 mt-2">Live stock & finance updates</p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid md:grid-cols-3 gap-8">
+
+        {% for item in news %}
+        <a href="{{ item.url }}" target="_blank">
+
+            <div class="group bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition duration-300">
+
+                <!-- IMAGE -->
+                <div class="relative">
+                    <img src="{{ item.image }}"
+                         class="w-full h-44 object-cover group-hover:scale-110 transition duration-300"
+                         onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+
+                    <!-- 🔴 LIVE BADGE -->
+                    <span class="absolute top-3 left-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full animate-pulse">
+                        ● LIVE
+                    </span>
+                </div>
+
+                <!-- CONTENT -->
+                <div class="p-5">
+
+                    <h2 class="text-lg font-semibold text-white group-hover:text-green-400 transition line-clamp-2">
+                        {{ item.title }}
+                    </h2>
+
+                    <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+                        <span>{{ item.source }}</span>
+                        <span>{{ item.time }}</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
