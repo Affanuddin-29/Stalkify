@@ -1,5 +1,4 @@
 Flask
-Flask-Login
-Flask-SQLAlchemy
-yfinance
 gunicorn
+flask-login
+flask-sqlalchemy
