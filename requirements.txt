@@ -2,3 +2,9 @@ Flask
 gunicorn
 flask-login
 flask-sqlalchemy
+yfinance
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
